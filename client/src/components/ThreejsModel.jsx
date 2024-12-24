@@ -1,18 +1,24 @@
 import React from 'react';
 import { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import Teacher from '../Teacher';
-import { OrbitControls } from '@react-three/drei';
+import Model from '../Scene';
+import { useGLTF } from '@react-three/drei';
 
+import { OrbitControls, Environment } from '@react-three/drei';
+function Room(props){
+  const { scene } = useGLTF('/RoboRoom.glb');
+   return <primitive object={scene} {...props} />;
+ }
 const ThreejsModel = () => {
   return (
     <div className="canvas-container flex justify-center items-center">
-      <Canvas 
-        camera={{ 
-          position: [0, 1.2, 5],
-          fov: 45
-        }}
-      >
+        <Canvas 
+          camera={{ 
+            position: [15, 4, 0],
+            fov: 45
+          }}
+          style={{width:'100vw',height:'100vh'}}
+        >
         {/* Lighter gradient background */}
         <color attach="background" args={['#CBD5E1']} />
         
@@ -56,13 +62,17 @@ const ThreejsModel = () => {
         />
 
         <Suspense fallback={null}>
-          <Teacher 
-            scale={0.2}
-            position={[0, 0, 0]} 
-            rotation={[0, 0, 0]}
+          <Model 
+            scale={2.7}
+            position={[0, -0.4, 0]} 
+            rotation={[0, Math.PI / 2, 0]}
           />
+          <Room scale={3} position={[0, 1.9, 0]} rotation={[0, Math.PI / 2, 0]} />
+         
+          <Environment preset="sunset" />
         </Suspense>
       </Canvas>
+      
     </div>
   );
 }

@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { AITutorSession } from '../service/GeminiApi';
-import { AudioLines, X } from 'lucide-react';
+import { AudioLines, X, Moon, Sun } from 'lucide-react';
 import ThreejsModel from './ThreejsModel';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
@@ -10,12 +11,35 @@ const ChatPage = () => {
   const [showModel, setShowModel] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [currentAnswer, setCurrentAnswer] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const speechSynthesisRef = useRef(null);
+  const audioIconRef = useRef(null);
+  const recognitionRef = useRef(null);
+
+  useEffect(() => {
+    let animationFrame;
+    if (isListening && audioIconRef.current) {
+      const animate = () => {
+        audioIconRef.current.style.transform = `scale(${1 + Math.sin(Date.now() / 200) * 0.2})`;
+        animationFrame = requestAnimationFrame(animate);
+      };
+      animate();
+    }
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [isListening]);
 
   const handleSpeechRecognition = () => {
     const recognition = new window.webkitSpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
+    recognitionRef.current = recognition;
+    
+    setIsListening(true);
     
     recognition.onresult = async (event) => {
       const spokenText = event.results[0][0].transcript;
@@ -23,16 +47,16 @@ const ChatPage = () => {
       
       try {
         setIsLoading(true);
-        const newMessages = [...messages, { role: 'user', content: spokenText }];
-        setMessages(newMessages);
+        const newUserMessage = { role: 'user', content: spokenText };
+        setMessages(prevMessages => [...prevMessages, newUserMessage]);
         
         const result = await AITutorSession.sendMessage(spokenText);
         const text = result.response.text();
         
         setCurrentAnswer(text);
-        setMessages([...newMessages, { role: 'assistant', content: text }]);
+        const newAssistantMessage = { role: 'assistant', content: text };
+        setMessages(prevMessages => [...prevMessages, newAssistantMessage]);
         
-        // Handle speech synthesis
         setIsSpeaking(true);
         const speech = new SpeechSynthesisUtterance(text);
         speechSynthesisRef.current = speech;
@@ -40,13 +64,21 @@ const ChatPage = () => {
         speech.onend = () => {
           setIsSpeaking(false);
           setCurrentAnswer('');
+          handleSpeechRecognition();
         };
         
         window.speechSynthesis.speak(speech);
       } catch (error) {
         console.error('Error:', error);
+        handleSpeechRecognition();
       } finally {
         setIsLoading(false);
+      }
+    };
+
+    recognition.onend = () => {
+      if (isListening) {
+        recognition.start();
       }
     };
 
@@ -58,14 +90,15 @@ const ChatPage = () => {
 
     try {
       setIsLoading(true);
-      const newMessages = [...messages, { role: 'user', content: inputMessage }];
-      setMessages(newMessages);
+      const newUserMessage = { role: 'user', content: inputMessage };
+      setMessages(prevMessages => [...prevMessages, newUserMessage]);
       setInputMessage('');
       
       const result = await AITutorSession.sendMessage(inputMessage);
       const text = result.response.text();
       
-      setMessages([...newMessages, { role: 'assistant', content: text }]);
+      const newAssistantMessage = { role: 'assistant', content: text };
+      setMessages(prevMessages => [...prevMessages, newAssistantMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -74,6 +107,10 @@ const ChatPage = () => {
   };
 
   const stopSpeaking = () => {
+    setIsListening(false);
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
     if (speechSynthesisRef.current) {
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
@@ -81,94 +118,155 @@ const ChatPage = () => {
     }
   };
 
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
   return (
-    <div className="flex flex-col h-screen bg-[#020617]">
-      {showModel && (
-        <div className="fixed inset-0 z-50">
-          <ThreejsModel />
-          <div className="absolute top-4 right-4 flex gap-2">
-            <button
-              onClick={handleSpeechRecognition}
-              disabled={isLoading || isSpeaking}
-              className="p-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-50"
-            >
-              <AudioLines />
-            </button>
-            <button
-              className="p-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
-              onClick={() => {
-                stopSpeaking();
-                setShowModel(false);
-              }}
-            >
-              <X />
-            </button>
-          </div>
-          {currentAnswer && (
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 max-w-2xl w-full mx-4">
-              <div className="bg-white p-4 rounded-lg shadow-lg">
-                <p className="text-gray-800">{currentAnswer}</p>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-      
-      <div className="flex-1 p-4 overflow-y-auto">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
+    <>
+     <style>
+          {`
+            ::-webkit-scrollbar {
+              display: none;
+            }
+            * {
+              -ms-overflow-style: none;
+              scrollbar-width: none;
+            }
+          `}
+        </style>
+      <div className={`flex flex-col h-screen  ${isDarkMode ? 'bg-[#020617] text-white' : 'bg-gray-100 text-gray-800'} transition-colors duration-300`}>
+        <div className="flex justify-end p-4">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={toggleTheme}
+            className={`p-2 rounded-full ${isDarkMode ? 'bg-yellow-400 text-gray-900' : 'bg-gray-800 text-white'}`}
           >
-            <div
-              className={`inline-block p-3 rounded-lg ${
-                message.role === 'user'
-                  ? 'bg-[#2563EB] text-white'
-                  : 'bg-white text-gray-800'
+            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </motion.button>
+        </div>
+       
+        <motion.div 
+          className="flex-1 p-4  overflow-y-auto scrollbar-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <AnimatePresence>
+            {messages.map((message, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
+              >
+                <div
+                  className={`inline-block p-3 rounded-lg ${
+                    message.role === 'user'
+                      ? 'bg-[#2563EB] text-white'
+                      : isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'
+                  }`}
+                >
+                  {message.content}
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+
+        {showModel && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50"
+          >
+            <ThreejsModel />
+            <div className="absolute top-4 right-4 flex gap-2">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                ref={audioIconRef}
+                onClick={handleSpeechRecognition}
+                disabled={isLoading || isSpeaking}
+                className={`p-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-50 ${
+                  isListening ? 'animate-pulse' : ''
+                }`}
+              >
+                <AudioLines />
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="p-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
+                onClick={() => {
+                  stopSpeaking();
+                  setShowModel(false);
+                }}
+              >
+                <X />
+              </motion.button>
+            </div>
+            {currentAnswer && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex justify-center items-center absolute bottom-8 w-full m-4 mx-auto"
+              >
+                <div className={`flex justify-center items-center p-4 rounded-lg shadow-lg ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
+                  <p>{currentAnswer}</p>
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+        
+        <div className={`p-4 border-t ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+          <div className="flex gap-5 items-center justify-center">
+            <motion.input
+              whileFocus={{ scale: 1.02 }}
+              type="text"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              placeholder="Ask your study-related question..."
+              className={`flex-1 p-2 border rounded-lg focus:outline-none focus:border-blue-500 shadow-md w-1/2 ${
+                isDarkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-800'
+              }`}
+              disabled={isLoading}
+            />
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleSendMessage}
+              disabled={isLoading}
+              className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-50"
+            >
+              {isLoading ? 'Sending...' : 'Send'}
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              ref={audioIconRef}
+              onClick={() => {
+                setShowModel(true);
+                handleSpeechRecognition();
+              }}
+              disabled={isLoading || isSpeaking}
+              className={`p-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-50 ${
+                isListening ? 'animate-pulse' : ''
               }`}
             >
-              {message.content}
-            </div>
+              <AudioLines />
+            </motion.button>
           </div>
-        ))}
-      </div>
-      
-      <div className="p-4 bg-white border-t">
-        <div className="flex gap-5 items-center justify-between">
-          <input
-            type="text"
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder="Ask your study-related question..."
-            className="flex-1 p-2 border rounded-lg focus:outline-none focus:border-blue-500 shadow-md w-1/2"
-            disabled={isLoading}
-          />
-          <button
-            onClick={handleSendMessage}
-            disabled={isLoading}
-            className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-50"
-          >
-            {isLoading ? 'Sending...' : 'Send'}
-          </button>
-          <button
-            onClick={() => {
-              setShowModel(true);
-              handleSpeechRecognition();
-            }}
-            disabled={isLoading || isSpeaking}
-            className="p-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-50"
-          >
-            <AudioLines />
-          </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
 export default ChatPage;
-
-
-
 
