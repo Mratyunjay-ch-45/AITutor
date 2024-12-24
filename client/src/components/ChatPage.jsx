@@ -136,13 +136,23 @@ const ChatPage = () => {
           `}
         </style>
       <div className={`flex flex-col h-screen  ${isDarkMode ? 'bg-[#020617] text-white' : 'bg-gray-100 text-gray-800'} transition-colors duration-300`}>
-        <div className="flex justify-end p-4">
+        <div className="flex justify-between items-center w-full p-4">
+        <motion.h1 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="text-2xl font-bold flex items-center flex-row gap-2"
+                    >
+                        AITUTOR
+                        <img src="https://cdna.artstation.com/p/assets/images/images/053/682/998/large/onur-inci-screenshot005-main-camera-1.jpg?1662767309" alt="" className='w-10 h-10 rounded-full' />
+                    </motion.h1>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={toggleTheme}
             className={`p-2 rounded-full ${isDarkMode ? 'bg-yellow-400 text-gray-900' : 'bg-gray-800 text-white'}`}
           >
+            
             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
           </motion.button>
         </div>
@@ -269,4 +279,3 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
-
