@@ -216,7 +216,7 @@ const ChatPage = () => {
                       : isDarkMode 
                         ? 'text-white' 
                         : 'text-gray-800'
-                  } max-w-[80%]`}
+                  } max-w-[80%] max-h-[60vh] overflow-y-auto`}
                 >
                   <ReactMarkdown
                     className={`prose ${isDarkMode ? 'prose-invert' : ''} max-w-none`}
@@ -287,7 +287,7 @@ const ChatPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex justify-center items-center absolute bottom-8 w-full m-4 mx-auto"
               >
-                <div className={`p-4 rounded-lg ${isDarkMode ? 'text-white' : 'text-white'}`}>
+                <div className={`p-4 rounded-lg max-h-[60vh] overflow-y-auto bg-opacity-90 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
                   <ReactMarkdown className={`prose ${isDarkMode ? 'prose-invert' : ''}`}>
                     {currentAnswer}
                   </ReactMarkdown>
@@ -297,7 +297,7 @@ const ChatPage = () => {
           </motion.div>
         )}
         
-        <div className={`p-4 border-t ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+        <div className={`p-2 border-t ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
           <div className="flex gap-5 items-center justify-center">
             <motion.input
               whileFocus={{ scale: 1.02 }}
