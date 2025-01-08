@@ -1,8 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion'
+import {useNavigate} from 'react-router-dom';
 
 
+    
 const HomePage = () => {
+    const navigate = useNavigate();
+
     return (
         <>
 <style>
@@ -29,14 +33,25 @@ const HomePage = () => {
                         AITUTOR
                         <img src="https://cdna.artstation.com/p/assets/images/images/053/682/998/large/onur-inci-screenshot005-main-camera-1.jpg?1662767309" alt="" className='w-10 h-10 rounded-full' />
                     </motion.h1>
+                    <div className='flex flex-row gap-2'>
+                    <motion.button
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-full font-semibold text-lg hover:bg-blue-600 transition-colors"
+                        onClick={()=>navigate("/register")}
+                    >
+                        Register
+                    </motion.button>
                     <motion.button
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5 }}
                         className="bg-blue-500 text-white px-4 py-2 rounded-full font-semibold text-lg hover:bg-blue-600 transition-colors"
                     >
-                        Register
+                        Login
                     </motion.button>
+                    </div>
                 </div>
                 <motion.div 
                     className="flex justify-between p-10 w-full h-full"

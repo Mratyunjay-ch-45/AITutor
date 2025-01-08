@@ -34,9 +34,20 @@ const ChatPage = () => {
   }, [isListening]);
 
   const handleSpeechRecognition = () => {
+    if (!window.webkitSpeechRecognition) {
+      alert("Speech recognition is not supported in this browser");
+      return;
+    }
+
+    if (isListening) {
+      stopSpeaking();
+      return;
+    }
+
     const recognition = new window.webkitSpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
+    recognition.lang = 'en-US';
     recognitionRef.current = recognition;
     
     setIsListening(true);
@@ -51,38 +62,52 @@ const ChatPage = () => {
         setMessages(prevMessages => [...prevMessages, newUserMessage]);
         
         const result = await AITutorSession.sendMessage(spokenText);
-        const text = result.response.text();
+        const text = await result.response.text();
         
         setCurrentAnswer(text);
         const newAssistantMessage = { role: 'assistant', content: text };
         setMessages(prevMessages => [...prevMessages, newAssistantMessage]);
         
-        setIsSpeaking(true);
-        const speech = new SpeechSynthesisUtterance(text);
-        speechSynthesisRef.current = speech;
-        
-        speech.onend = () => {
-          setIsSpeaking(false);
-          setCurrentAnswer('');
-          handleSpeechRecognition();
-        };
-        
-        window.speechSynthesis.speak(speech);
+        // Only speak if we're not already speaking
+        if (!isSpeaking) {
+          setIsSpeaking(true);
+          const speech = new SpeechSynthesisUtterance(text);
+          speech.rate = 1.0;  // Normal speed
+          speech.pitch = 1.0; // Normal pitch
+          speech.volume = 1.0; // Full volume
+          speechSynthesisRef.current = speech;
+          
+          speech.onend = () => {
+            setIsSpeaking(false);
+            setCurrentAnswer('');
+            setIsListening(false); // Stop listening after response
+          };
+          
+          window.speechSynthesis.speak(speech);
+        }
       } catch (error) {
         console.error('Error:', error);
-        handleSpeechRecognition();
+        setIsListening(false);
       } finally {
         setIsLoading(false);
       }
     };
 
     recognition.onend = () => {
-      if (isListening) {
-        recognition.start();
-      }
+      setIsListening(false);
     };
 
-    recognition.start();
+    recognition.onerror = (event) => {
+      console.error('Recognition error:', event.error);
+      setIsListening(false);
+    };
+
+    try {
+      recognition.start();
+    } catch (error) {
+      console.error('Failed to start recognition:', error);
+      setIsListening(false);
+    }
   };
 
   const handleSendMessage = async () => {
@@ -95,7 +120,7 @@ const ChatPage = () => {
       setInputMessage('');
       
       const result = await AITutorSession.sendMessage(inputMessage);
-      const text = result.response.text();
+      const text = await result.response.text();
       
       const newAssistantMessage = { role: 'assistant', content: text };
       setMessages(prevMessages => [...prevMessages, newAssistantMessage]);
@@ -109,7 +134,11 @@ const ChatPage = () => {
   const stopSpeaking = () => {
     setIsListening(false);
     if (recognitionRef.current) {
-      recognitionRef.current.stop();
+      try {
+        recognitionRef.current.stop();
+      } catch (error) {
+        console.error('Error stopping recognition:', error);
+      }
     }
     if (speechSynthesisRef.current) {
       window.speechSynthesis.cancel();
@@ -122,43 +151,49 @@ const ChatPage = () => {
     setIsDarkMode(!isDarkMode);
   };
 
+  // Clean up on component unmount
+  useEffect(() => {
+    return () => {
+      stopSpeaking();
+    };
+  }, []);
+
   return (
     <>
-     <style>
-          {`
-            ::-webkit-scrollbar {
-              display: none;
-            }
-            * {
-              -ms-overflow-style: none;
-              scrollbar-width: none;
-            }
-          `}
-        </style>
-      <div className={`flex flex-col h-screen  ${isDarkMode ? 'bg-[#020617] text-white' : 'bg-gray-100 text-gray-800'} transition-colors duration-300`}>
+      <style>
+        {`
+          ::-webkit-scrollbar {
+            display: none;
+          }
+          * {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+        `}
+      </style>
+      <div className={`flex flex-col h-screen ${isDarkMode ? 'bg-[#020617] text-white' : 'bg-gray-100 text-gray-800'} transition-colors duration-300`}>
         <div className="flex justify-between items-center w-full p-4">
-        <motion.h1 
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="text-2xl font-bold flex items-center flex-row gap-2"
-                    >
-                        AITUTOR
-                        <img src="https://cdna.artstation.com/p/assets/images/images/053/682/998/large/onur-inci-screenshot005-main-camera-1.jpg?1662767309" alt="" className='w-10 h-10 rounded-full' />
-                    </motion.h1>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-2xl font-bold flex items-center flex-row gap-2"
+          >
+            AITUTOR
+            <img src="https://cdna.artstation.com/p/assets/images/images/053/682/998/large/onur-inci-screenshot005-main-camera-1.jpg?1662767309" alt="" className='w-10 h-10 rounded-full' />
+          </motion.h1>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={toggleTheme}
             className={`p-2 rounded-full ${isDarkMode ? 'bg-yellow-400 text-gray-900' : 'bg-gray-800 text-white'}`}
           >
-            
             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
           </motion.button>
         </div>
        
         <motion.div 
-          className="flex-1 p-4  overflow-y-auto scrollbar-none"
+          className="flex-1 p-4 overflow-y-auto scrollbar-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
@@ -201,7 +236,7 @@ const ChatPage = () => {
                 ref={audioIconRef}
                 onClick={handleSpeechRecognition}
                 disabled={isLoading || isSpeaking}
-                className={`p-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-50 ${
+                className={`p-2 text-white ${isListening ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'} rounded-lg disabled:opacity-50 ${
                   isListening ? 'animate-pulse' : ''
                 }`}
               >
@@ -265,7 +300,7 @@ const ChatPage = () => {
                 handleSpeechRecognition();
               }}
               disabled={isLoading || isSpeaking}
-              className={`p-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-50 ${
+              className={`p-2 text-white ${isListening ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'} rounded-lg disabled:opacity-50 ${
                 isListening ? 'animate-pulse' : ''
               }`}
             >
@@ -279,3 +314,4 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
+
