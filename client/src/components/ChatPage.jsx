@@ -2,7 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { AITutorSession } from '../service/GeminiApi';
 import { AudioLines, X, Moon, Sun } from 'lucide-react';
 import ThreejsModel from './ThreejsModel';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, color } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
@@ -208,13 +210,38 @@ const ChatPage = () => {
                 className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
               >
                 <div
-                  className={`inline-block p-3 rounded-lg ${
+                  className={`inline-block p-4 rounded-xl ${
                     message.role === 'user'
-                      ? 'bg-[#2563EB] text-white'
-                      : isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'
-                  }`}
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : isDarkMode 
+                        ? 'text-white' 
+                        : 'text-gray-800'
+                  } max-w-[80%]`}
                 >
-                  {message.content}
+                  <ReactMarkdown
+                    className={`prose ${isDarkMode ? 'prose-invert' : ''} max-w-none`}
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      code({node, inline, className, children, ...props}) {
+                        return (
+                          <code
+                            className={`${inline ? 'bg-opacity-25 rounded px-1' : 'block p-2 rounded-lg'} 
+                              ${message.role === 'user' 
+                                ? 'bg-blue-700' 
+                                : isDarkMode 
+                                  ? 'bg-[#0F172A]' 
+                                  : 'bg-gray-200'
+                                    }`}
+                            {...props}
+                          >
+                            {children}
+                          </code>
+                        )
+                      }
+                    }}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
                 </div>
               </motion.div>
             ))}
@@ -260,8 +287,10 @@ const ChatPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex justify-center items-center absolute bottom-8 w-full m-4 mx-auto"
               >
-                <div className={`flex justify-center items-center p-4 rounded-lg shadow-lg ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
-                  <p>{currentAnswer}</p>
+                <div className={`p-4 rounded-lg ${isDarkMode ? 'text-white' : 'text-white'}`}>
+                  <ReactMarkdown className={`prose ${isDarkMode ? 'prose-invert' : ''}`}>
+                    {currentAnswer}
+                  </ReactMarkdown>
                 </div>
               </motion.div>
             )}
