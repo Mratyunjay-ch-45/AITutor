@@ -159,7 +159,7 @@ const Register = () => {
                     <div className="relative">
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl blur-2xl opacity-20"></div>
                         <img 
-                            src="https://cdna.artstation.com/p/assets/images/images/053/682/988/large/onur-inci-screenshot005.jpg?1662767290" 
+                            src="/airobo.png" 
                             alt="AI Tutor" 
                             className="relative w-full object-cover rounded-2xl shadow-2xl hover:shadow-blue-500/20 transition-shadow duration-300"
                         />

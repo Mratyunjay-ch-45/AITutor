@@ -139,9 +139,9 @@ const HomePage = () => {
                         transition={{ duration: 0.8, delay: 0.3 }}
                     >
                         <img 
-                            src="https://cdna.artstation.com/p/assets/images/images/053/682/988/large/onur-inci-screenshot005.jpg?1662767290" 
+                            src="/airobo.png" 
                             alt="AI Tutor" 
-                            className="w-full object-cover bg-white shadow-lg rounded-lg h-full hover:shadow-2xl transition-shadow duration-300"
+                            className="w-full object-cover bg-[#020617] shadow-lg rounded-lg h-full hover:shadow-2xl transition-shadow duration-300"
                         />
                     </motion.div>
                 </motion.div>
