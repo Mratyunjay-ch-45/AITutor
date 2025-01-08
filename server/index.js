@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 
 //routes imports
 const userRoutes = require("./routes/user");
+const quizRoutes = require("./routes/quiz");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(express.json());
 mongoose.connect("mongodb://localhost:27017/AITutor")
     .then(() => {
         console.log("Connected to MongoDB");
+
     })
     .catch((err) => {
         console.log(err);
@@ -29,6 +31,7 @@ mongoose.connect("mongodb://localhost:27017/AITutor")
 
 //routes
 app.use("/user", userRoutes);
+app.use("/quiz", quizRoutes);
 
 app.listen(8000, () => {
     console.log("Server is running on port 8000");

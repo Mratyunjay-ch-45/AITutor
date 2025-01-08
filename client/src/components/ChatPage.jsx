@@ -5,8 +5,11 @@ import ThreejsModel from './ThreejsModel';
 import { motion, AnimatePresence, color } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import Quiz from './Quiz';
+import {useNavigate} from 'react-router-dom';
 
 const ChatPage = () => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +37,10 @@ const ChatPage = () => {
       }
     };
   }, [isListening]);
+
+  const handleQuiz = () => {
+    navigate('/quiz');
+  };
 
   const handleSpeechRecognition = () => {
     if (!window.webkitSpeechRecognition) {
@@ -319,6 +326,14 @@ const ChatPage = () => {
               className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-50"
             >
               {isLoading ? 'Sending...' : 'Send'}
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleQuiz}
+              className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-green-600 disabled:opacity-50"
+            >
+              Quiz
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
