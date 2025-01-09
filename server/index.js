@@ -5,10 +5,12 @@ const cookieParser = require('cookie-parser');
 
 //routes imports
 const userRoutes = require("./routes/user");
-const quizRoutes = require("./routes/quiz");
+const quizRoutes = require("./routes/quiz"); 
+const reelRoutes = require("./routes/reel");
 
 const app = express();
 
+// Remove duplicate cookieParser middleware
 app.use(cookieParser());
 app.use(cors({
     origin: "http://localhost:3000",
@@ -16,14 +18,12 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(express.urlencoded({extended:true}));
-app.use(cookieParser());
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 mongoose.connect("mongodb://localhost:27017/AITutor")
     .then(() => {
         console.log("Connected to MongoDB");
-
     })
     .catch((err) => {
         console.log(err);
@@ -32,6 +32,7 @@ mongoose.connect("mongodb://localhost:27017/AITutor")
 //routes
 app.use("/user", userRoutes);
 app.use("/quiz", quizRoutes);
+app.use("/reel", reelRoutes);
 
 app.listen(8000, () => {
     console.log("Server is running on port 8000");

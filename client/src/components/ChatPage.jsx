@@ -8,6 +8,7 @@ import remarkGfm from 'remark-gfm';
 import Quiz from './Quiz';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import Reel from './Reel';
 
 const ChatPage = () => {
   const navigate = useNavigate();
@@ -38,6 +39,10 @@ const ChatPage = () => {
       }
     };
   }, [isListening]);
+
+  const handleWatchTutorial = () => {
+    navigate('/reel');
+  };
 
   const handleLogout = async () => {
     await axios.post('http://localhost:8000/user/logout', {}, { withCredentials: true });
@@ -351,6 +356,14 @@ const ChatPage = () => {
               className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-green-600 disabled:opacity-50"
             >
               Quiz
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleWatchTutorial}
+              className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-green-600 disabled:opacity-50"
+            >
+              Watch Tutorial
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}

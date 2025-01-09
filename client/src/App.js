@@ -6,6 +6,7 @@ import Register from './components/User/Register';
 import LogIn from './components/User/LogIn';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import Quiz from './components/Quiz';
+import Reel from './components/Reel';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/quiz" element={<Quiz />} />
+        <Route path="/reel" element={<Reel />} />
       </Routes>
     </Router>
   );
