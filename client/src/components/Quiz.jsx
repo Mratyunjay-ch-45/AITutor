@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Quiz = () => {
     const [topic, setTopic] = useState('');
@@ -10,6 +11,12 @@ const Quiz = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [detailedResults, setDetailedResults] = useState(null);
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        await axios.post('http://localhost:8000/user/logout', {}, { withCredentials: true });
+        navigate('/login');
+    };
 
     const handleTopicSubmit = async (e) => {
         e.preventDefault();
@@ -80,14 +87,31 @@ const Quiz = () => {
     };
 
     return (
+        <>
+        
+                      
+                  
         <div className='flex flex-col w-full justify-between items-center bg-[#020617] text-white min-h-screen p-6'>
+            <style>
+                {`
+                    ::-webkit-scrollbar {
+                        display: none;
+                    }
+                    * {
+                        -ms-overflow-style: none;
+                        scrollbar-width: none;
+                    }
+                `}
+            </style>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 className="w-full max-w-3xl"
             >
+                 
                 <form onSubmit={handleTopicSubmit} className="mb-8">
+                
                     <div className="flex gap-4">
                         <input
                             type="text"
@@ -97,6 +121,7 @@ const Quiz = () => {
                             className="flex-1 p-3 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:border-white/40"
                             required
                         />
+                     
                         <button
                             type="submit"
                             className="px-6 py-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -104,8 +129,19 @@ const Quiz = () => {
                         >
                             {loading ? 'Generating...' : 'Generate Quiz'}
                         </button>
+                        <button
+                            onClick={handleLogout}
+                            className="px-6 py-3 bg-red-600 rounded-lg hover:bg-red-700 transition-colors ml-4"
+                        >
+                            Logout
+                        </button>
+                       
+                       
                     </div>
+                  
                 </form>
+
+                       
 
                 {error && (
                     <motion.div
@@ -181,6 +217,7 @@ const Quiz = () => {
                 )}
             </motion.div>
         </div>
+        </>
     );
 };
 

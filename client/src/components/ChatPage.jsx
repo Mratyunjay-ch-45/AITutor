@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Quiz from './Quiz';
 import {useNavigate} from 'react-router-dom';
+import axios from 'axios';
 
 const ChatPage = () => {
   const navigate = useNavigate();
@@ -37,6 +38,12 @@ const ChatPage = () => {
       }
     };
   }, [isListening]);
+
+  const handleLogout = async () => {
+    await axios.post('http://localhost:8000/user/logout', {}, { withCredentials: true });
+    navigate('/login');
+};
+
 
   const handleQuiz = () => {
     navigate('/quiz');
@@ -191,6 +198,7 @@ const ChatPage = () => {
             AITUTOR
             <img src="https://cdna.artstation.com/p/assets/images/images/053/682/998/large/onur-inci-screenshot005-main-camera-1.jpg?1662767309" alt="" className='w-10 h-10 rounded-full' />
           </motion.h1>
+          <div className='flex items-center'>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -199,7 +207,16 @@ const ChatPage = () => {
           >
             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
           </motion.button>
+          <button
+                            onClick={handleLogout}
+                            className={`px-6 py-3 bg-red-600 rounded-lg hover:bg-red-700 transition-colors ml-4
+                            ${isDarkMode ? 'text-white' : 'text-gray-800'}`}
+                        >
+                            Logout
+                        </button>
+          </div>
         </div>
+
        
         <motion.div 
           className="flex-1 p-4 overflow-y-auto scrollbar-none"
