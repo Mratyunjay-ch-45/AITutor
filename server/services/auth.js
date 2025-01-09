@@ -1,33 +1,32 @@
+const bcrypt = require("bcrypt");
+const User = require("../models/user");
+
+
 const jwt = require("jsonwebtoken");
 
-const secretKey = process.env.JWT_SECRET || "Rvjmj456@";  // Use an env variable in production
+const generateToken = (user) => {
+    return jwt.sign(
+        { 
+            id: user._id,
+            email: user.email,
+            
+        },
+        process.env.JWT_SECRET || "secret",
+        { expiresIn: "24h" }
+    );
+};
 
-function generateToken(user) {
-    const payload = {
-        name: user.name,
-        email: user.email,
-        userId: user._id,
-        
-    };
-    return jwt.sign(payload, secretKey, { expiresIn: "1h" });
-}
-
-function verifyToken(req, res, next) {
-    const token = req.cookies.token;
-  
-    if (!token) {
-      return res.status(403).json({ message: 'No token provided' });
+const verifyToken = (token) => {
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret");
+        return decoded;
+    } catch (error) {
+        throw new Error("Invalid token");
     }
-  
-    jwt.verify(token, secretKey, (err, decoded) => {
-      if (err) {
-        return res.status(403).json({ message: 'Failed to authenticate token' });
-      }
-  
-      // Attach the user data to the request object
-      req.user = decoded;
-      console.log("user verified:",req.user);
-      next();
-    });
-  }
-module.exports = { generateToken, verifyToken };
+};
+
+module.exports = { 
+    generateToken, 
+    verifyToken, 
+
+};

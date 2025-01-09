@@ -1,26 +1,36 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const LogIn = () => {
-    const [userdata,setUserdata] = useState({
-        email:"",   
-        password:""
+    const navigate = useNavigate();
+    const [userdata, setUserdata] = useState({
+        email: "",
+        password: ""
     });
+    const [error, setError] = useState("");
 
     const handleChange = (e) => {
-        setUserdata({...userdata,[e.target.name]:e.target.value});
+        setUserdata({...userdata, [e.target.name]: e.target.value});
+        setError(""); // Clear error when user types
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:8000/user/login",userdata,{
-                withCredentials:true
+            const response = await axios.post("http://localhost:8000/user/login", userdata, {
+                withCredentials: true
             });
-            console.log(response);
+            
+            if (response.data.user) {
+                // Store user data in localStorage or context if needed
+                localStorage.setItem('user', JSON.stringify(response.data.user));
+                navigate('/chat'); // Redirect to chat after successful login
+            }
         } catch (error) {
-            console.log(error);
+            setError(error.response?.data?.message || "Login failed. Please try again.");
+            console.error("Login error:", error);
         }
     }
 
@@ -67,6 +77,16 @@ const LogIn = () => {
                             </h1>
                         </motion.div>
 
+                        {error && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="p-3 rounded-lg bg-red-500/20 border border-red-500/50 text-red-200 text-center"
+                            >
+                                {error}
+                            </motion.div>
+                        )}
+
                         <motion.div
                             initial={{ x: -20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
@@ -81,6 +101,8 @@ const LogIn = () => {
                                     name="email"
                                     placeholder="Enter your email..."
                                     onChange={handleChange}
+                                    value={userdata.email}
+                                    required
                                     className="relative w-full pl-4 pr-4 py-4 rounded-lg bg-white/10 border border-white/20 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-200 text-white placeholder-gray-400 text-lg"
                                 />
                             </div>
@@ -100,6 +122,8 @@ const LogIn = () => {
                                     name="password"
                                     placeholder="Enter your password..."
                                     onChange={handleChange}
+                                    value={userdata.password}
+                                    required
                                     className="relative w-full pl-4 pr-4 py-4 rounded-lg bg-white/10 border border-white/20 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-200 text-white placeholder-gray-400 text-lg"
                                 />
                             </div>
@@ -163,4 +187,3 @@ const LogIn = () => {
 }
 
 export default LogIn;
-

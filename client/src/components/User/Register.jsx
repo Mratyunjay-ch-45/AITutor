@@ -1,28 +1,37 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-    const [userdata,setUserdata] = useState({
-        name:"",
-        email:"",
-        password:"",
-        
+    const navigate = useNavigate();
+    const [userdata, setUserdata] = useState({
+        name: "",
+        email: "",
+        password: ""
     });
+    const [error, setError] = useState("");
 
     const handleChange = (e) => {
-        setUserdata({...userdata,[e.target.name]:e.target.value});
-    }   
+        setUserdata({...userdata, [e.target.name]: e.target.value});
+        setError(""); // Clear error when user types
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:8000/user/register",userdata,{
-                withCredentials:true
+            const response = await axios.post("http://localhost:8000/user/register", userdata, {
+                withCredentials: true
             });
-            console.log(response);
+            
+            if (response.data.user) {
+                // Store user data in localStorage
+                localStorage.setItem('user', JSON.stringify(response.data.user));
+                navigate('/login'); // Redirect to login after successful registration
+            }
         } catch (error) {
-            console.log(error);
+            setError(error.response?.data?.message || "Registration failed. Please try again.");
+            console.error("Registration error:", error);
         }
     }
 
@@ -54,7 +63,9 @@ const Register = () => {
                 >
                     <motion.form
                         onSubmit={handleSubmit}
-                        className="space-y-6"
+                        initial={{ scale: 0.95 }}
+                        animate={{ scale: 1 }}
+                        className="space-y-6 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-lg p-10 rounded-2xl shadow-xl border border-white/10"
                     >
                         <motion.div 
                             className="flex items-center justify-center gap-4 mb-8"
@@ -66,6 +77,16 @@ const Register = () => {
                                 Create Account
                             </h1>
                         </motion.div>
+
+                        {error && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-500"
+                            >
+                                {error}
+                            </motion.div>
+                        )}
 
                         <motion.div
                             initial={{ x: -20, opacity: 0 }}
@@ -81,6 +102,7 @@ const Register = () => {
                                     name="name"
                                     placeholder="Enter your name..."
                                     onChange={handleChange}
+                                    required
                                     className="relative w-full pl-4 pr-4 py-4 rounded-lg bg-white/10 border border-white/20 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-200 text-white placeholder-gray-400 text-lg"
                                 />
                             </div>
@@ -100,6 +122,7 @@ const Register = () => {
                                     name="email"
                                     placeholder="Enter your email..."
                                     onChange={handleChange}
+                                    required
                                     className="relative w-full pl-4 pr-4 py-4 rounded-lg bg-white/10 border border-white/20 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-200 text-white placeholder-gray-400 text-lg"
                                 />
                             </div>
@@ -119,12 +142,12 @@ const Register = () => {
                                     name="password"
                                     placeholder="Enter your password..."
                                     onChange={handleChange}
+                                    required
+                                    minLength="6"
                                     className="relative w-full pl-4 pr-4 py-4 rounded-lg bg-white/10 border border-white/20 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-200 text-white placeholder-gray-400 text-lg"
                                 />
                             </div>
                         </motion.div>
-
-                       
 
                         <motion.button
                             whileHover={{ scale: 1.02 }}
