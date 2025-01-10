@@ -13,7 +13,7 @@ const app = express();
 // Remove duplicate cookieParser middleware
 app.use(cookieParser());
 app.use(cors({
-    origin: "https://aitutor-ctpy.onrender.com",
+    origin: "https://ai-tutor-nu.vercel.app",
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
