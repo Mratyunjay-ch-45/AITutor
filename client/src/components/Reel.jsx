@@ -95,7 +95,7 @@ const Reel = () => {
     const fetchVideos = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:8000/reel/recommended', {
+            const response = await axios.get('https://aitutor-ctpy.onrender.com/reel/recommended', {
                 params: {
                     keyword: searchTerm,
                     ...filters

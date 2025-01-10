@@ -20,7 +20,7 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:8000/user/register", userdata, {
+            const response = await axios.post("https://aitutor-ctpy.onrender.com/user/register", userdata, {
                 withCredentials: true
             });
             

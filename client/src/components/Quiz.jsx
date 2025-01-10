@@ -20,7 +20,7 @@ const Quiz = () => {
     };
 
     const handleLogout = async () => {
-        await axios.post('http://localhost:8000/user/logout', {}, { withCredentials: true });
+        await axios.post('https://aitutor-ctpy.onrender.com/user/logout', {}, { withCredentials: true });
         navigate('/login');
     };
 
@@ -29,7 +29,7 @@ const Quiz = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.post('http://localhost:8000/quiz/generate', {
+            const response = await axios.post('https://aitutor-ctpy.onrender.com/quiz/generate', {
                 topic: topic,
                 numQuestions: 10,
                 numOptions: 4
@@ -72,7 +72,7 @@ const Quiz = () => {
 
     const handleQuizSubmit = async () => {
         try {
-            const response = await axios.post('http://localhost:8000/quiz/submit', {
+            const response = await axios.post('https://aitutor-ctpy.onrender.com/quiz/submit', {
                 questions: questions,
                 userAnswers: Object.values(userAnswers)
             }, {

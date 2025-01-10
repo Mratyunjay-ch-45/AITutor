@@ -19,7 +19,7 @@ const LogIn = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:8000/user/login", userdata, {
+            const response = await axios.post("https://aitutor-ctpy.onrender.com/user/login", userdata, {
                 withCredentials: true
             });
             

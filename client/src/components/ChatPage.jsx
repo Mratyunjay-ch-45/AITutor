@@ -45,7 +45,7 @@ const ChatPage = () => {
   };
 
   const handleLogout = async () => {
-    await axios.post('http://localhost:8000/user/logout', {}, { withCredentials: true });
+    await axios.post('https://aitutor-ctpy.onrender.com/user/logout', {}, { withCredentials: true });
     localStorage.removeItem('user');
     navigate('/login');
 };
