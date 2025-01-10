@@ -21,7 +21,7 @@ app.use(cors({
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-mongoose.connect("mongodb://localhost:27017/AITutor")
+mongoose.connect("mongodb+srv://mratyunjaychouhan45:LgmmCjoYURkeqr3X@cluster0.y1pps.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     .then(() => {
         console.log("Connected to MongoDB");
     })
