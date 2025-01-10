@@ -150,6 +150,38 @@ const LogIn = () => {
                                 />
                             </svg>
                         </motion.button>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                            className="mt-6 text-center"
+                        >
+                            <p className="text-gray-400 mb-3">Don't have an account?</p>
+                            <motion.button
+                                whileHover={{ scale: 1.02, backgroundColor: "rgba(59, 130, 246, 0.1)" }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => navigate('/register')}
+                                className="group relative px-6 py-3 rounded-lg overflow-hidden transition-all duration-300"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/10 to-purple-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <span className="relative flex items-center gap-2 text-blue-400 font-medium">
+                                    Create an Account
+                                    <svg 
+                                        className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-200" 
+                                        fill="none" 
+                                        stroke="currentColor" 
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path 
+                                            strokeLinecap="round" 
+                                            strokeLinejoin="round" 
+                                            strokeWidth={2} 
+                                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                                        />
+                                    </svg>
+                                </span>
+                            </motion.button>
+                        </motion.div>
                     </motion.form>
                 </motion.div>
 
@@ -187,3 +219,4 @@ const LogIn = () => {
 }
 
 export default LogIn;
+

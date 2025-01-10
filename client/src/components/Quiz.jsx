@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Moon, Sun } from 'lucide-react';
 
 const Quiz = () => {
     const [topic, setTopic] = useState('');
@@ -11,7 +12,12 @@ const Quiz = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [detailedResults, setDetailedResults] = useState(null);
+    const [isDarkMode, setIsDarkMode] = useState(true);
     const navigate = useNavigate();
+
+    const toggleTheme = () => {
+        setIsDarkMode(!isDarkMode);
+    };
 
     const handleLogout = async () => {
         await axios.post('http://localhost:8000/user/logout', {}, { withCredentials: true });
@@ -87,11 +93,7 @@ const Quiz = () => {
     };
 
     return (
-        <>
-        
-                      
-                  
-        <div className='flex flex-col w-full justify-between items-center bg-[#020617] text-white min-h-screen p-6'>
+        <div className={`min-h-screen ${isDarkMode ? 'bg-[#020617] text-white' : 'bg-gray-100 text-gray-800'} transition-colors duration-300`}>
             <style>
                 {`
                     ::-webkit-scrollbar {
@@ -103,121 +105,164 @@ const Quiz = () => {
                     }
                 `}
             </style>
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="w-full max-w-3xl"
-            >
-                 
-                <form onSubmit={handleTopicSubmit} className="mb-8">
-                
+            <div className="container mx-auto px-4 py-8">
+                <div className="flex justify-between items-center mb-8">
+                <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-2xl font-bold flex items-center flex-row gap-2"
+          >
+            AITUTOR
+            <img src="https://cdna.artstation.com/p/assets/images/images/053/682/998/large/onur-inci-screenshot005-main-camera-1.jpg?1662767309" alt="" className='w-10 h-10 rounded-full' />
+          </motion.h1>
                     <div className="flex gap-4">
-                        <input
-                            type="text"
-                            value={topic}
-                            onChange={(e) => setTopic(e.target.value)}
-                            placeholder="Enter a topic for your quiz"
-                            className="flex-1 p-3 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:border-white/40"
-                            required
+                    <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={toggleTheme}
+                        className={`p-4 rounded-full ${isDarkMode ? 'bg-yellow-400 text-gray-900' : 'bg-gray-800 text-white'}`}
+                    >
+                        {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+                    </motion.button>
+                    <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => navigate('/chat')}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-black hover:bg-gray-900 text-white"
+                    >
+                        <img 
+                            src="https://cdna.artstation.com/p/assets/images/images/053/682/998/large/onur-inci-screenshot005-main-camera-1.jpg?1662767309"
+                            alt="AI Avatar"
+                            className="w-6 h-6 rounded-full"
                         />
-                     
-                        <button
-                            type="submit"
-                            className="px-6 py-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled={loading || !topic.trim()}
-                        >
-                            {loading ? 'Generating...' : 'Generate Quiz'}
-                        </button>
-                        <button
-                            onClick={handleLogout}
-                            className="px-6 py-3 bg-red-600 rounded-lg hover:bg-red-700 transition-colors ml-4"
-                        >
-                            Logout
-                        </button>
-                       
-                       
-                    </div>
-                  
-                </form>
-
-                       
-
-                {error && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="p-4 mb-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200"
-                    >
-                        {error}
-                    </motion.div>
-                )}
-
-                {questions.length > 0 && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="space-y-6"
-                    >
-                        {questions.map((question, index) => (
-                            <div key={index} className="bg-white/5 p-6 rounded-lg">
-                                <h3 className="text-lg mb-4">{question.question}</h3>
-                                <div className="space-y-2">
-                                    {question.options.map((option, optionIndex) => (
-                                        <label key={optionIndex} className="flex items-center space-x-3 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                name={`question-${index}`}
-                                                value={option}
-                                                checked={userAnswers[index] === option}
-                                                onChange={() => handleAnswerSelect(index, option)}
-                                                className="form-radio text-blue-600"
-                                            />
-                                            <span>{option}</span>
-                                        </label>
-                                    ))}
-                                </div>
+                        <span>Chat with AI</span>
+                    </motion.button>
+                    
+                            
                             </div>
-                        ))}
-                        
-                        <button
-                            onClick={handleQuizSubmit}
-                            className="w-full py-3 bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
-                            disabled={Object.keys(userAnswers).length !== questions.length}
-                        >
-                            Submit Quiz
-                        </button>
+                </div>
 
-                        {score !== null && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="text-center p-6 bg-white/5 rounded-lg"
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full max-w-3xl mx-auto"
+                >
+                    <form onSubmit={handleTopicSubmit} className="mb-8">
+                        <div className="flex gap-4">
+                            <input
+                                type="text"
+                                value={topic}
+                                onChange={(e) => setTopic(e.target.value)}
+                                placeholder="Enter a topic for your quiz"
+                                className={`flex-1 p-3 rounded-lg border focus:outline-none focus:border-blue-500 ${
+                                    isDarkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-800 border-gray-300'
+                                }`}
+                                required
+                            />
+                            <button
+                                type="submit"
+                                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={loading || !topic.trim()}
                             >
-                                <h2 className="text-2xl mb-2">Your Score</h2>
-                                <p className="text-4xl font-bold">{score.toFixed(1)}%</p>
-                                
-                                {detailedResults && (
-                                    <div className="mt-6 text-left">
-                                        <h3 className="text-xl mb-4">Detailed Results</h3>
-                                        {detailedResults.map((result, index) => (
-                                            <div key={index} className={`p-4 mb-4 rounded-lg ${result.isCorrect ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
-                                                <p className="font-medium mb-2">{result.question}</p>
-                                                <p>Your answer: {result.userAnswer}</p>
-                                                {!result.isCorrect && (
-                                                    <p className="text-red-300">Correct answer: {result.correctAnswer}</p>
-                                                )}
-                                            </div>
+                                {loading ? 'Generating...' : 'Generate Quiz'}
+                            </button>
+                            
+                        </div>
+                    </form>
+
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className={`p-4 mb-4 rounded-lg ${isDarkMode ? 'bg-red-500/20 text-red-200' : 'bg-red-100 text-red-800'}`}
+                        >
+                            {error}
+                        </motion.div>
+                    )}
+
+                    {questions.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="space-y-6"
+                        >
+                            {questions.map((question, index) => (
+                                <div 
+                                    key={index} 
+                                    className={`p-6 rounded-lg ${
+                                        isDarkMode ? 'bg-gray-800' : 'bg-white shadow-lg'
+                                    }`}
+                                >
+                                    <h3 className="text-lg mb-4">{question.question}</h3>
+                                    <div className="space-y-2">
+                                        {question.options.map((option, optionIndex) => (
+                                            <label key={optionIndex} className="flex items-center space-x-3 cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    name={`question-${index}`}
+                                                    value={option}
+                                                    checked={userAnswers[index] === option}
+                                                    onChange={() => handleAnswerSelect(index, option)}
+                                                    className="form-radio text-blue-500"
+                                                />
+                                                <span>{option}</span>
+                                            </label>
                                         ))}
                                     </div>
-                                )}
-                            </motion.div>
-                        )}
-                    </motion.div>
-                )}
-            </motion.div>
+                                </div>
+                            ))}
+                            
+                            <button
+                                onClick={handleQuizSubmit}
+                                className="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                                disabled={Object.keys(userAnswers).length !== questions.length}
+                            >
+                                Submit Quiz
+                            </button>
+
+                            {score !== null && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className={`text-center p-6 rounded-lg ${
+                                        isDarkMode ? 'bg-gray-800' : 'bg-white shadow-lg'
+                                    }`}
+                                >
+                                    <h2 className="text-2xl mb-2">Your Score</h2>
+                                    <p className="text-4xl font-bold">{score.toFixed(1)}%</p>
+                                    
+                                    {detailedResults && (
+                                        <div className="mt-6 text-left">
+                                            <h3 className="text-xl mb-4">Detailed Results</h3>
+                                            {detailedResults.map((result, index) => (
+                                                <div 
+                                                    key={index} 
+                                                    className={`p-4 mb-4 rounded-lg ${
+                                                        result.isCorrect 
+                                                            ? (isDarkMode ? 'bg-green-500/20' : 'bg-green-100') 
+                                                            : (isDarkMode ? 'bg-red-500/20' : 'bg-red-100')
+                                                    }`}
+                                                >
+                                                    <p className="font-medium mb-2">{result.question}</p>
+                                                    <p>Your answer: {result.userAnswer}</p>
+                                                    {!result.isCorrect && (
+                                                        <p className={isDarkMode ? 'text-red-300' : 'text-red-600'}>
+                                                            Correct answer: {result.correctAnswer}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </motion.div>
+                            )}
+                        </motion.div>
+                    )}
+                </motion.div>
+            </div>
         </div>
-        </>
     );
 };
 

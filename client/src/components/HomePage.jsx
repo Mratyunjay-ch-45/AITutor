@@ -1,11 +1,37 @@
 import React from 'react';
 import { motion } from 'framer-motion'
 import {useNavigate} from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 
     
 const HomePage = () => {
     const navigate = useNavigate();
+
+    const handleLogin = () => {
+        navigate('/login');
+    }
+
+    const handleRegister = () => {
+        navigate('/register');
+    }
+    const handleStartLearning = () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) {
+            navigate('/login');
+        } else {
+            navigate('/chat');
+        }
+    }
+    const handleStartChat = () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) {
+            navigate('/login');
+        } else {
+            navigate('/chat');
+        }
+    }
+
 
     return (
         <>
@@ -39,7 +65,7 @@ const HomePage = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5 }}
                         className="bg-blue-500 text-white px-4 py-2 rounded-full font-semibold text-lg hover:bg-blue-600 transition-colors"
-                        onClick={()=>navigate("/register")}
+                        onClick={handleRegister}
                     >
                         Register
                     </motion.button>
@@ -48,6 +74,7 @@ const HomePage = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5 }}
                         className="bg-blue-500 text-white px-4 py-2 rounded-full font-semibold text-lg hover:bg-blue-600 transition-colors"
+                        onClick={handleLogin}
                     >
                         Login
                     </motion.button>
@@ -127,6 +154,7 @@ const HomePage = () => {
                             className="mt-8 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
+                            onClick={handleStartLearning}
                         >
                             Start Learning Now
                         </motion.button>
@@ -168,12 +196,7 @@ const HomePage = () => {
                     <p className="text-gray-600 leading-relaxed">
                         Engage with our AI tutor through natural conversations and receive instant, personalized feedback to enhance your understanding.
                     </p>
-                    <div className="mt-6 flex items-center text-blue-500">
-                        <span className="font-semibold">Learn More</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                    </div>
+                    
                 </motion.div>
 
                 <motion.div
@@ -192,12 +215,7 @@ const HomePage = () => {
                     <p className="text-gray-600 leading-relaxed">
                         Learn hands-free with our advanced voice recognition system. Speak naturally and receive spoken responses from your AI tutor.
                     </p>
-                    <div className="mt-6 flex items-center text-blue-500">
-                        <span className="font-semibold">Try Voice</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                    </div>
+                    
                 </motion.div>
 
                 <motion.div
@@ -216,12 +234,7 @@ const HomePage = () => {
                     <p className="text-gray-600 leading-relaxed">
                         Experience a customized learning journey that adapts to your pace and style, ensuring optimal understanding and retention.
                     </p>
-                    <div className="mt-6 flex items-center text-blue-500">
-                        <span className="font-semibold">Start Now</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                    </div>
+                    
                 </motion.div>
             </motion.div>
 
@@ -252,9 +265,7 @@ const HomePage = () => {
                         <p className="mb-6 opacity-90">
                             Get immediate, detailed responses to all your academic questions, 24/7. No waiting required.
                         </p>
-                        <button className="bg-white text-blue-600 px-6 py-2 rounded-full font-semibold hover:bg-blue-50 transition-colors">
-                            Ask Now
-                        </button>
+                       
                     </motion.div>
 
                     {/* Personalized Explanations */}
@@ -271,9 +282,7 @@ const HomePage = () => {
                         <p className="mb-6 opacity-90">
                             Receive step-by-step explanations tailored to your understanding level and learning style.
                         </p>
-                        <button className="bg-white text-purple-600 px-6 py-2 rounded-full font-semibold hover:bg-purple-50 transition-colors">
-                            Learn More
-                        </button>
+                        
                     </motion.div>
 
                     {/* Voice Interaction */}
@@ -290,9 +299,7 @@ const HomePage = () => {
                         <p className="mb-6 opacity-90">
                             Simply speak your questions and receive spoken answers. Perfect for multitasking while studying.
                         </p>
-                        <button className="bg-white text-green-600 px-6 py-2 rounded-full font-semibold hover:bg-green-50 transition-colors">
-                            Try Voice Chat
-                        </button>
+                        
                     </motion.div>
                 </div>
 
@@ -307,7 +314,9 @@ const HomePage = () => {
                     <h3 className="text-2xl md:text-3xl font-bold text-white mb-6">
                         Have a Question? Your AI Study Partner is Ready!
                     </h3>
-                    <button className="bg-blue-600 mb-5 text-white px-8 py-3 rounded-full font-semibold text-lg hover:bg-blue-700 transition-colors shadow-lg">
+                    <button className="bg-blue-600 mb-5 text-white px-8 py-3 rounded-full font-semibold text-lg hover:bg-blue-700 transition-colors shadow-lg"
+                    onClick={handleStartChat}
+                    >
                         Start Chatting
                     </button>
                 </motion.div>

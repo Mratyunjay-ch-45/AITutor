@@ -13,7 +13,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/chat" element={<ProtectedRoutes><ChatPage /></ProtectedRoutes>} />
+        <Route path="/chat" element={<ProtectedRoutes children={<ChatPage />} />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/quiz" element={<Quiz />} />

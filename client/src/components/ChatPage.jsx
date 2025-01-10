@@ -46,6 +46,7 @@ const ChatPage = () => {
 
   const handleLogout = async () => {
     await axios.post('http://localhost:8000/user/logout', {}, { withCredentials: true });
+    localStorage.removeItem('user');
     navigate('/login');
 };
 
