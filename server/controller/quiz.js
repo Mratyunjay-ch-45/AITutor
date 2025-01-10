@@ -97,7 +97,7 @@ const generateQuiz = async (req, res) => {
             }
 
             // Set CORS headers
-            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Origin', 'https://aitutor-ctpy.onrender.com');
             res.header('Access-Control-Allow-Credentials', true);
             res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
             res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept');
@@ -153,7 +153,7 @@ const submitQuiz = async (req, res) => {
         const score = (correctAnswers / questions.length) * 100;
 
         // Set CORS headers
-        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Origin', 'https://aitutor-ctpy.onrender.com');
         res.header('Access-Control-Allow-Credentials', true);
         res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
         res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept');
