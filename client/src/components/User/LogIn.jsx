@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 const LogIn = () => {
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [userdata, setUserdata] = useState({
         email: "",
@@ -17,18 +18,22 @@ const LogIn = () => {
     }
 
     const handleSubmit = async (e) => {
+        setLoading(true);
         e.preventDefault();
         try {
             const response = await axios.post("https://aitutor-ctpy.onrender.com/user/login", userdata, {
                 withCredentials: true
             });
+        
             
             if (response.data.user) {
                 // Store user data in localStorage or context if needed
+                setLoading(false);
                 localStorage.setItem('user', JSON.stringify(response.data.user));
                 navigate('/chat'); // Redirect to chat after successful login
             }
         } catch (error) {
+            setLoading(false);
             setError(error.response?.data?.message || "Login failed. Please try again.");
             console.error("Login error:", error);
         }
@@ -135,7 +140,7 @@ const LogIn = () => {
                             type="submit"
                             className="w-full py-4 px-6 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold text-lg shadow-lg transition-all duration-200 flex items-center justify-center gap-2 mt-8"
                         >
-                            Sign In
+                            {loading ? "Loading..." : "Log In"}
                             <svg 
                                 className="w-6 h-6" 
                                 fill="none" 
@@ -219,4 +224,3 @@ const LogIn = () => {
 }
 
 export default LogIn;
-
