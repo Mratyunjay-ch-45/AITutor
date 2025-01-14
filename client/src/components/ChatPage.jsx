@@ -23,6 +23,7 @@ const ChatPage = () => {
   const speechSynthesisRef = useRef(null);
   const audioIconRef = useRef(null);
   const recognitionRef = useRef(null);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     let animationFrame;
@@ -45,9 +46,19 @@ const ChatPage = () => {
   };
 
   const handleLogout = async () => {
+    setLoggingOut(true);
+   try {
+
     await axios.post('https://aitutor-ctpy.onrender.com/user/logout', {}, { withCredentials: true });
+    setLoggingOut(false);
     localStorage.removeItem('user');
     navigate('/login');
+   } catch (error) {
+    setLoggingOut(false);
+      console.error('Error logging out:', error);
+      
+   }
+    setLoggingOut(false);
 };
 
 
@@ -218,7 +229,7 @@ const ChatPage = () => {
                             className={`px-6 py-3 bg-red-600 rounded-lg hover:bg-red-700 transition-colors ml-4
                             ${isDarkMode ? 'text-white' : 'text-gray-800'}`}
                         >
-                            Logout
+                            {loggingOut ? 'Logging out...' : 'Logout'}
                         </button>
           </div>
         </div>

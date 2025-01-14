@@ -13,16 +13,13 @@ const Quiz = () => {
     const [error, setError] = useState(null);
     const [detailedResults, setDetailedResults] = useState(null);
     const [isDarkMode, setIsDarkMode] = useState(true);
+    
     const navigate = useNavigate();
 
     const toggleTheme = () => {
         setIsDarkMode(!isDarkMode);
     };
 
-    const handleLogout = async () => {
-        await axios.post('https://aitutor-ctpy.onrender.com/user/logout', {}, { withCredentials: true });
-        navigate('/login');
-    };
 
     const handleTopicSubmit = async (e) => {
         e.preventDefault();
