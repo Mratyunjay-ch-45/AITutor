@@ -103,43 +103,44 @@ const Quiz = () => {
                 `}
             </style>
             <div className="container mx-auto px-4 py-8">
-                <div className="flex justify-between items-center mb-8">
-                <motion.h1 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-2xl font-bold flex items-center flex-row gap-2"
-          >
-            AITUTOR
-            <img src="https://cdna.artstation.com/p/assets/images/images/053/682/998/large/onur-inci-screenshot005-main-camera-1.jpg?1662767309" alt="" className='w-10 h-10 rounded-full' />
-          </motion.h1>
-                    <div className="flex gap-4">
-                    <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={toggleTheme}
-                        className={`p-4 rounded-full ${isDarkMode ? 'bg-yellow-400 text-gray-900' : 'bg-gray-800 text-white'}`}
+                <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                    <motion.h1 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="text-2xl font-bold flex items-center gap-2"
                     >
-                        {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-                    </motion.button>
-                    <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => navigate('/chat')}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-black hover:bg-gray-900 text-white"
-                    >
+                        AITUTOR
                         <img 
-                            src="https://cdna.artstation.com/p/assets/images/images/053/682/998/large/onur-inci-screenshot005-main-camera-1.jpg?1662767309"
-                            alt="AI Avatar"
-                            className="w-6 h-6 rounded-full"
+                            src="https://cdna.artstation.com/p/assets/images/images/053/682/998/large/onur-inci-screenshot005-main-camera-1.jpg?1662767309" 
+                            alt="" 
+                            className='w-8 h-8 sm:w-10 sm:h-10 rounded-full'
                         />
-                        <span>Chat with AI</span>
-                    </motion.button>
-                    
-                            
-                            </div>
+                    </motion.h1>
+                    <div className="flex flex-wrap justify-center gap-4">
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={toggleTheme}
+                            className={`p-3 sm:p-4 rounded-full ${isDarkMode ? 'bg-yellow-400 text-gray-900' : 'bg-gray-800 text-white'}`}
+                        >
+                            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                        </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => navigate('/chat')}
+                            className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 rounded-lg bg-black hover:bg-gray-900 text-white text-sm sm:text-base"
+                        >
+                            <img 
+                                src="https://cdna.artstation.com/p/assets/images/images/053/682/998/large/onur-inci-screenshot005-main-camera-1.jpg?1662767309"
+                                alt="AI Avatar"
+                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-full"
+                            />
+                            <span>Chat with AI</span>
+                        </motion.button>
+                    </div>
                 </div>
-
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

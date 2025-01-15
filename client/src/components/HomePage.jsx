@@ -48,54 +48,53 @@ const HomePage = () => {
         </style>
 
             <div className='flex flex-col w-full justify-between items-center bg-[#020617] text-white'>
-            
-                <div className="flex justify-between items-center w-full p-10">
+                <div className="flex flex-col md:flex-row justify-between items-center w-full p-4 md:p-10">
                     <motion.h1 
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5 }}
-                        className="text-2xl font-bold flex items-center flex-row gap-2"
+                        className="text-2xl font-bold flex items-center gap-2 mb-4 md:mb-0"
                     >
                         AITUTOR
                         <img src="https://cdna.artstation.com/p/assets/images/images/053/682/998/large/onur-inci-screenshot005-main-camera-1.jpg?1662767309" alt="" className='w-10 h-10 rounded-full' />
                     </motion.h1>
                     <div className='flex flex-row gap-2'>
-                    <motion.button
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-full font-semibold text-lg hover:bg-blue-600 transition-colors"
-                        onClick={handleRegister}
-                    >
-                        Register
-                    </motion.button>
-                    <motion.button
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-full font-semibold text-lg hover:bg-blue-600 transition-colors"
-                        onClick={handleLogin}
-                    >
-                        Login
-                    </motion.button>
+                        <motion.button
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="bg-blue-500 text-white px-4 py-2 rounded-full font-semibold text-lg hover:bg-blue-600 transition-colors"
+                            onClick={handleRegister}
+                        >
+                            Register
+                        </motion.button>
+                        <motion.button
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="bg-blue-500 text-white px-4 py-2 rounded-full font-semibold text-lg hover:bg-blue-600 transition-colors"
+                            onClick={handleLogin}
+                        >
+                            Login
+                        </motion.button>
                     </div>
                 </div>
                 <motion.div 
-                    className="flex justify-between p-10 w-full h-full"
+                    className="flex flex-col md:flex-row justify-between p-4 md:p-10 w-full"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
                 >
                     <motion.div 
-                        className="w-1/2 pr-8"
+                        className="w-full md:w-1/2 md:pr-8 mb-8 md:mb-0"
                         initial={{ x: -100 }}
                         whileInView={{ x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.2 }}
                     >
                         <motion.h1 
-                            className="text-5xl font-bold mb-4"
+                            className="text-3xl md:text-5xl font-bold mb-4"
                             initial={{ y: -20 }}
                             whileInView={{ y: 0 }}
                             viewport={{ once: true }}
@@ -104,7 +103,7 @@ const HomePage = () => {
                             Your Personal AI Learning Companion
                         </motion.h1>
                         <motion.p 
-                            className="text-xl mb-6"
+                            className="text-lg md:text-xl mb-6"
                             initial={{ opacity: 0 }}
                             whileInView={{ opacity: 1 }}
                             viewport={{ once: true }}
@@ -113,45 +112,27 @@ const HomePage = () => {
                             Experience personalized learning with our advanced AI tutor. Get instant answers, engage in natural conversations, and enhance your understanding through interactive study sessions.
                         </motion.p>
                         <div className="space-y-4">
-                            <motion.div 
-                                className="flex items-center"
-                                initial={{ x: -50 }}
-                                whileInView={{ x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: 0.4 }}
-                            >
-                                <svg className="w-6 h-6 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <motion.div className="flex items-center">
+                                <svg className="w-6 h-6 text-blue-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                 </svg>
-                                <p>24/7 availability for your study needs</p>
+                                <p className="text-sm md:text-base">24/7 availability for your study needs</p>
                             </motion.div>
-                            <motion.div 
-                                className="flex items-center text-white"
-                                initial={{ x: -50 }}
-                                whileInView={{ x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: 0.5 }}
-                            >
-                                <svg className="w-6 h-6 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <motion.div className="flex items-center">
+                                <svg className="w-6 h-6 text-blue-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                                 </svg>
-                                <p>Voice interaction for natural learning experience</p>
+                                <p className="text-sm md:text-base">Voice interaction for natural learning experience</p>
                             </motion.div>
-                            <motion.div 
-                                className="flex items-center"
-                                initial={{ x: -50 }}
-                                whileInView={{ x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: 0.6 }}
-                            >
-                                <svg className="w-6 h-6 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <motion.div className="flex items-center">
+                                <svg className="w-6 h-6 text-blue-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <p>Personalized learning paths and feedback</p>
+                                <p className="text-sm md:text-base">Personalized learning paths and feedback</p>
                             </motion.div>
                         </div>
                         <motion.button 
-                            className="mt-8 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                            className="mt-8 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors w-full md:w-auto"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={handleStartLearning}
@@ -160,7 +141,7 @@ const HomePage = () => {
                         </motion.button>
                     </motion.div>
                     <motion.div 
-                        className="w-1/2"
+                        className="w-full md:w-1/2"
                         initial={{ x: 100, opacity: 0 }}
                         whileInView={{ x: 0, opacity: 1 }}
                         viewport={{ once: true }}
@@ -169,11 +150,10 @@ const HomePage = () => {
                         <img 
                             src="/airobo.png" 
                             alt="AI Tutor" 
-                            className="w-full object-cover bg-[#020617] shadow-lg rounded-lg h-full hover:shadow-2xl transition-shadow duration-300"
+                            className="w-full h-[300px] md:h-full object-cover bg-[#020617] shadow-lg rounded-lg hover:shadow-2xl transition-shadow duration-300"
                         />
                     </motion.div>
                 </motion.div>
-                
             <motion.div 
                 className="grid grid-cols-1 md:grid-cols-3 gap-8 p-10 w-full"
                 initial={{ opacity: 0 }}
