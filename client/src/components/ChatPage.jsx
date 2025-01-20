@@ -272,7 +272,6 @@ const ChatPage = () => {
             ))}
           </AnimatePresence>
         </motion.div>
-
         {showModel && (
           <motion.div 
             initial={{ opacity: 0 }}
@@ -304,9 +303,19 @@ const ChatPage = () => {
                 <X size={20} />
               </motion.button>
             </div>
+            {currentAnswer && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="fixed bottom-20   w-full mx-auto p-4 bg-black bg-opacity-50 rounded-lg text-white max-h-[40vh]  overflow-y-auto"
+              >
+                <div className="text-center">
+                  <ReactMarkdown>{currentAnswer}</ReactMarkdown>
+                </div>
+              </motion.div>
+            )}
           </motion.div>
         )}
-        
         <div className={`p-1 border-t ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} fixed bottom-0 left-0 right-0`}>
           <div className="flex flex-col md:flex-row gap-2 md:gap-5 items-center justify-center max-w-6xl mx-auto">
             <motion.input

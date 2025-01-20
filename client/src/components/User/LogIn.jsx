@@ -43,6 +43,9 @@ const LogIn = () => {
     }
 
     return (
+
+        <>
+        {loading ? <LoadingScreen /> :
     <div className='flex flex-col w-full justify-between items-center bg-[#020617] text-white min-h-screen'>
         <style>
             {`
@@ -132,11 +135,7 @@ const LogIn = () => {
                         </div>
                     </motion.div>
 
-                    {loading ? (
-                        <div className="text-white font-semibold text-base md:text-lg shadow-lg transition-all duration-200 flex items-center justify-center gap-2 mt-8 w-full py-3 md:py-4 px-6 rounded-lg">
-                        <LoadingScreen />
-                        
-                        </div> ) : (<motion.button
+                   <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         type="submit"
@@ -148,7 +147,9 @@ const LogIn = () => {
                         </svg>
                     </motion.button>
 
-                        )}
+                    {loading && <LoadingScreen />}
+
+                      
 
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -205,6 +206,10 @@ const LogIn = () => {
             </motion.div>
         </motion.div>
     </div>
+
+                }
+
+    </>
     );
 }
 
