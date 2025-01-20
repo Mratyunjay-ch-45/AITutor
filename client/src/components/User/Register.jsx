@@ -18,18 +18,28 @@ const Register = () => {
         setError(""); // Clear error when user types
     }
 
+    useEffect(() => {
+        const user = localStorage.getItem('user');
+        if (user) {
+            // If user is already logged in, redirect them to the dashboard or home page
+            navigate('/login');
+        }
+    }, [navigate]);
+
     const handleSubmit = async (e) => {
-        setLoading(true);
         e.preventDefault();
+        setLoading(true);
+        
         try {
             const response = await axios.post("https://aitutor-ctpy.onrender.com/user/register", userdata, {
                 withCredentials: true
             });
             
             if (response.data.user) {
-                setLoading(false);
+                
                 // Store user data in localStorage
                 localStorage.setItem('user', JSON.stringify(response.data.user));
+                setLoading(false);
                 navigate('/login'); // Redirect to login after successful registration
             }
         } catch (error) {
