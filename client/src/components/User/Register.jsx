@@ -18,14 +18,7 @@ const Register = () => {
         setError(""); // Clear error when user types
     }
 
-    useEffect(() => {
-        const user = localStorage.getItem('user');
-        if (user) {
-            // If user is already logged in, redirect them to the dashboard or home page
-            navigate('/login');
-        }
-    }, [navigate]);
-
+  
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
