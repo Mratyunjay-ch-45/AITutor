@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import LoadingScreen from "../loadingScreen";
 
 const LogIn = () => {
     const [loading, setLoading] = useState(false);
@@ -21,9 +22,11 @@ const LogIn = () => {
         setLoading(true);
         e.preventDefault();
         try {
+            
             const response = await axios.post("https://aitutor-ctpy.onrender.com/user/login", userdata, {
                 withCredentials: true
             });
+
         
             
             if (response.data.user) {
@@ -129,7 +132,11 @@ const LogIn = () => {
                         </div>
                     </motion.div>
 
-                    <motion.button
+                    {loading ? (
+                        <div className="text-white font-semibold text-base md:text-lg shadow-lg transition-all duration-200 flex items-center justify-center gap-2 mt-8 w-full py-3 md:py-4 px-6 rounded-lg">
+                        <LoadingScreen />
+                        
+                        </div> ) : (<motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         type="submit"
@@ -140,6 +147,8 @@ const LogIn = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
                     </motion.button>
+
+                        )}
 
                     <motion.div
                         initial={{ opacity: 0 }}
