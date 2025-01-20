@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { set } from "mongoose";
+
 
 const Register = () => {
     const navigate = useNavigate();
