@@ -35,7 +35,7 @@ const Register = () => {
                 localStorage.setItem('user', JSON.stringify(response.data.user));
                if(localStorage.getItem('user')){
                 setLoading(false);
-                navigate("/chat");
+                navigate("/login");
                }
             }
         } catch (error) {
