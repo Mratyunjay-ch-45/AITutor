@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { set } from "mongoose";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -32,8 +33,10 @@ const Register = () => {
                 
                 // Store user data in localStorage
                 localStorage.setItem('user', JSON.stringify(response.data.user));
+               if(localStorage.getItem('user')){
                 setLoading(false);
-                navigate('/login'); // Redirect to login after successful registration
+                navigate("/chat");
+               }
             }
         } catch (error) {
             setLoading(false);
